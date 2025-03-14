@@ -24,7 +24,35 @@ class ProduitController extends Controller
             return $query->get();
         }
 
-  
+        public function show($id)
+        {
+            $produit = Produit::findOrFail($id)->with('categorie')->get();
+            return response()->json($produit);
+        }
+    
+        public function stocksCritiques()
+        {
+            $produits = Produit::where('quantite', '<=', 5)->get();
+            return response()->json($produits, 200);
+        }
+        public function updateStock(Request $request, Produit $produit)
+            {
+                $request->validate([
+                    'quantite_vendue' => 'required|integer|min:1', // Quantité vendue
+                ]);
+
+                // Mettre à jour la quantité
+                $nouvelleQuantite = $produit->quantite - $request->quantite_vendue;
+                $produit->update(['quantite' => $nouvelleQuantite]);
+
+                // Vérifier si le produit passe sous le seuil d'alerte
+                $seuilAlerte = 5; // Seuil fixe
+                if ($nouvelleQuantite <= $seuilAlerte) {
+                    event(new ProduitSeuilAlerte($produit)); // Déclencher l'événement
+                }
+
+                return response()->json(['message' => 'Stock mis à jour'], 200);
+            }
       public function store(Request $request)
       {
           $request->validate([
@@ -43,6 +71,18 @@ class ProduitController extends Controller
           $produit->update($request->all());
           return response()->json(['message' => 'Produit mis à jour avec succès'], 200);
       }
+      public function mettreAJourStock(int $quantite)
+        {
+            $this->quantite -= $quantite;
+            $this->save();
+
+            if ($this->quantite <= 5) { // Exemple de seuil critique
+                $admins = User::where('role', 'admin')->get();
+                foreach ($admins as $admin) {
+                    $admin->notify(new StockCritiqueNotification($this));
+                }
+            }
+        }
   
       public function destroy(Produit $produit)
       {

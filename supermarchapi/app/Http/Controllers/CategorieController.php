@@ -27,7 +27,7 @@ class CategorieController extends Controller
     }
         public function show($id)
         {
-            $categorie=Categorie::findOrFail($id);
+            $categorie=Categorie::findOrFail($id)->with('rayon', 'produits')->get();
             return response()->json($categorie);
         }
         public function update(Request $request,$id)

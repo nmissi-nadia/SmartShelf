@@ -6,6 +6,17 @@ use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
+
+    /**
+     * The event listener mappings for the application.
+     *
+     * @var array
+     */
+    protected $listen = [
+        ProduitSeuilAlerte::class => [
+            EnvoyerAlerteSeuilBas::class,
+        ],
+    ];
     /**
      * Register any application services.
      */
