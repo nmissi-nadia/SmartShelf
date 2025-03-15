@@ -1,0 +1,472 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "SmartShelf API",
+        "description": "API documentation for the SmartShelf project",
+        "contact": {
+            "name": "Nmissinadia",
+            "email": "nmissinadia@gmail.com"
+        },
+        "version": "1.0"
+    },
+    "paths": {
+        "/api/auth/register": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Register a new user",
+                "operationId": "d764dd091cc4494ae0baf360b03319f3",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "name",
+                                    "email",
+                                    "password"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "string"
+                                    },
+                                    "email": {
+                                        "type": "string"
+                                    },
+                                    "password": {
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "User registered successfully"
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                }
+            }
+        },
+        "/api/produits": {
+            "get": {
+                "tags": [
+                    "Produits"
+                ],
+                "summary": "Liste des produits",
+                "operationId": "059ba901d56d1b85845397dcc5120bd2",
+                "responses": {
+                    "200": {
+                        "description": "Liste des produits récupérée avec succès",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Produit"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Produits"
+                ],
+                "summary": "Créer un nouveau produit",
+                "operationId": "1d2c1c7cee2e131dfeb85184f2824a90",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "nom",
+                                    "prix",
+                                    "quantite",
+                                    "categorie_id"
+                                ],
+                                "properties": {
+                                    "nom": {
+                                        "type": "string",
+                                        "example": "Produit Test"
+                                    },
+                                    "prix": {
+                                        "type": "number",
+                                        "format": "float",
+                                        "example": 100
+                                    },
+                                    "quantite": {
+                                        "type": "integer",
+                                        "example": 50
+                                    },
+                                    "pourcentage_sold": {
+                                        "type": "integer",
+                                        "example": 10
+                                    },
+                                    "en_promotion": {
+                                        "type": "boolean",
+                                        "example": true
+                                    },
+                                    "categorie_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Produit créé avec succès",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Produit ajouté avec succès"
+                                        },
+                                        "produit": {
+                                            "$ref": "#/components/schemas/Produit"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Erreur de validation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Les données sont invalides."
+                                        },
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/produits/{id}": {
+            "get": {
+                "tags": [
+                    "Produits"
+                ],
+                "summary": "Récupérer un produit par ID",
+                "operationId": "4f89d6d658ffba7d843303b681d52762",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID du produit",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Produit récupéré avec succès",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Produit"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Produit non trouvé"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Produits"
+                ],
+                "summary": "Mettre à jour un produit",
+                "operationId": "05d27b4688f87d159b38ecb2f0d03dc1",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID du produit",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Produit"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Produit mis à jour avec succès",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Produit mis à jour avec succès"
+                                        },
+                                        "produit": {
+                                            "$ref": "#/components/schemas/Produit"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Produit non trouvé"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Produits"
+                ],
+                "summary": "Supprimer un produit",
+                "operationId": "3a0611f76b7e02b393d422a5598e5afd",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID du produit",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Produit supprimé avec succès"
+                    },
+                    "404": {
+                        "description": "Produit non trouvé"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/produits/recherche": {
+            "get": {
+                "tags": [
+                    "Produits"
+                ],
+                "summary": "Rechercher des produits",
+                "operationId": "399cfd4daae4699dee3dea9bdadcb1b5",
+                "parameters": [
+                    {
+                        "name": "nom",
+                        "in": "query",
+                        "description": "Nom du produit",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "categorie_id",
+                        "in": "query",
+                        "description": "ID de la catégorie",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Liste des produits correspondant aux critères",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Produit"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/produits/{id}/update-stock": {
+            "post": {
+                "tags": [
+                    "Produits"
+                ],
+                "summary": "Mettre à jour le stock d'un produit",
+                "operationId": "5de2c412cbe484c435cb6628f901a3cf",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID du produit",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "quantite_vendue"
+                                ],
+                                "properties": {
+                                    "quantite_vendue": {
+                                        "type": "integer",
+                                        "example": 1
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Stock mis à jour avec succès",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Stock mis à jour"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Erreur de validation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Les données sont invalides."
+                                        },
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "Produit": {
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "nom": {
+                        "type": "string"
+                    },
+                    "prix": {
+                        "type": "number",
+                        "format": "float"
+                    },
+                    "quantite": {
+                        "type": "integer"
+                    },
+                    "pourcentage_sold": {
+                        "type": "integer"
+                    },
+                    "en_promotion": {
+                        "type": "boolean"
+                    },
+                    "categorie_id": {
+                        "type": "integer"
+                    }
+                },
+                "type": "object"
+            }
+        },
+        "securitySchemes": {
+            "bearerAuth": {
+                "type": "http",
+                "bearerFormat": "JWT",
+                "scheme": "bearer"
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Auth",
+            "description": "Auth"
+        },
+        {
+            "name": "Produits",
+            "description": "Produits"
+        }
+    ]
+}

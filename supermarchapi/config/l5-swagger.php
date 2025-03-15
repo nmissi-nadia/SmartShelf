@@ -15,6 +15,7 @@ return [
                 'api' => 'api/documentation',
             ],
             'paths' => [
+                
                 /*
                  * Edit to include full URL in ui for assets
                  */
@@ -51,6 +52,7 @@ return [
     ],
     'defaults' => [
         'routes' => [
+            'api' => 'docs',
             /*
              * Route for accessing parsed swagger annotations.
              */
