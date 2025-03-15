@@ -41,7 +41,7 @@ L'objectif principal est d'automatiser et de simplifier les opérations quotidie
 
 Le diagramme de conception du système est disponible dans le fichier suivant :
 
-- [Conception du système (PDF)](conceptionSmartShelf.drawio.pdf)
+- [Conception du système (PDF)](UML/conceptionSmartShelf.drawio.pdf)
 
 Ce diagramme illustre les relations entre les entités principales du système (`Produit`, `Rayon`, `Catégorie`, `Commande`) ainsi que les cas d'utilisation pour les différents acteurs (Administrateur et Client).
 
