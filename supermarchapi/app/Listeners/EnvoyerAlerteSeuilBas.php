@@ -5,17 +5,22 @@ namespace App\Listeners;
 use App\Events\ProduitSeuilAlerte;
 use App\Notifications\StockAlertNotification;
 use App\Models\User;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\AlerteSeuilBas; 
 
 class EnvoyerAlerteSeuilBas
 {
-    public function handle(ProduitSeuilAlerte $event)
-    {
-        // Récupérer tous les administrateurs
-        $admins = User::where('role', 'admin')->get();
+    public function handle(StockCritiqueEvent $event)
+{
+    // Get the product from the event
+    $produit = $event->produit;
 
-        // Envoyer une notification à chaque admin
-        foreach ($admins as $admin) {
-            $admin->notify(new StockAlertNotification($event->produit));
-        }
+    // Get all admins
+    $admins = User::where('role', 'admin')->get();
+
+    // Send an email to each admin
+    foreach ($admins as $admin) {
+        Mail::to($admin->email)->send(new AlerteSeuilBas($produit));
     }
+}
 }

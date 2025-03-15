@@ -11,12 +11,28 @@ use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
 {
-    /**
- * @OA\SecurityScheme(
- *     type="http",
- *     scheme="bearer",
- *     bearerFormat="JWT", // Indique que le token est au format JWT (compatible avec Sanctum)
- *     securityScheme="bearerAuth"
+   /**
+ * @OA\Post(
+ *     path="/api/auth/register",
+ *     summary="Register a new user",
+ *     tags={"Auth"},
+ *     @OA\RequestBody(
+ *         required=true,
+ *         @OA\JsonContent(
+ *             required={"name", "email", "password"},
+ *             @OA\Property(property="name", type="string"),
+ *             @OA\Property(property="email", type="string"),
+ *             @OA\Property(property="password", type="string")
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=201,
+ *         description="User registered successfully"
+ *     ),
+ *     @OA\Response(
+ *         response=422,
+ *         description="Validation error"
+ *     )
  * )
  */
     // Inscription

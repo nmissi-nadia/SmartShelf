@@ -77,7 +77,7 @@ class ProduitTest extends TestCase
         ])->deleteJson("/api/produits/{$produit->id}");
 
         // Assertions
-        $response->assertStatus(204); // Vérifie que le statut est 204 (No Content)
+        $response->assertStatus(204); 
         $this->assertDatabaseMissing('produits', ['id' => $produit->id]); // Vérifie que le produit a été supprimé
     }
 }
