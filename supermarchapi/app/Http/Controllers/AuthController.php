@@ -11,6 +11,14 @@ use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
 {
+    /**
+ * @OA\SecurityScheme(
+ *     type="http",
+ *     scheme="bearer",
+ *     bearerFormat="JWT", // Indique que le token est au format JWT (compatible avec Sanctum)
+ *     securityScheme="bearerAuth"
+ * )
+ */
     // Inscription
     public function register(Request $request){
         $request->validate([
@@ -27,7 +35,7 @@ class AuthController extends Controller
         ]);
 
         $token = $user->createToken('auth_token')->plainTextToken;
-        
+
         return response()->json(['token' => $token,'message' => 'Inscription avec succès']);
     }
     // Connexion

@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Produit;
+use App\Models\User;
 use App\Models\Categorie;
+
 
 class ProduitController extends Controller
 {
@@ -24,11 +26,6 @@ class ProduitController extends Controller
             return $query->get();
         }
 
-        public function show($id)
-        {
-            $produit = Produit::findOrFail($id)->with('categorie')->get();
-            return response()->json($produit);
-        }
     
         public function stocksCritiques()
         {
@@ -71,23 +68,18 @@ class ProduitController extends Controller
           $produit->update($request->all());
           return response()->json(['message' => 'Produit mis à jour avec succès'], 200);
       }
-      public function mettreAJourStock(int $quantite)
-        {
-            $this->quantite -= $quantite;
-            $this->save();
-
-            if ($this->quantite <= 5) { // Exemple de seuil critique
-                $admins = User::where('role', 'admin')->get();
-                foreach ($admins as $admin) {
-                    $admin->notify(new StockCritiqueNotification($this));
-                }
-            }
-        }
+     
   
       public function destroy(Produit $produit)
       {
           $produit->delete();
-          return response()->json(['message' => 'Produit supprimé'], 200);
+          return response()->json(['message' => 'Produit supprimé'],204);
+      }
+      
+      public function show($id)
+      {
+          $produit = Produit::findOrFail($id)->get();
+          return response()->json($produit,200);
       }
 
     //   stats
@@ -108,4 +100,45 @@ class ProduitController extends Controller
 
         return response()->json($produits, 200);
     }
+
+    /**
+     * @OA\Post(
+     *     path="/api/produits",
+     *     summary="Créer un nouveau produit",
+     *     tags={"Produits"},
+     *     security={{"bearerAuth":{}}},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"nom", "prix", "quantite", "categorie_id"},
+     *             @OA\Property(property="nom", type="string", example="Produit Test"),
+     *             @OA\Property(property="prix", type="number", format="float", example=100.0),
+     *             @OA\Property(property="quantite", type="integer", example=50),
+     *             @OA\Property(property="categorie_id", type="integer", example=1)
+     *         )
+     *     ),
+     *  *     @OA\Response(
+     *         response=201,
+     *         description="Produit créé avec succès",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Produit ajouté avec succès"),
+     *             @OA\Property(property="produit", type="object",
+     *                 @OA\Property(property="id", type="integer", example=1),
+     *                 @OA\Property(property="nom", type="string", example="Produit Test"),
+     *                 @OA\Property(property="prix", type="number", format="float", example=100.0),
+     *                 @OA\Property(property="quantite", type="integer", example=50),
+     *                 @OA\Property(property="categorie_id", type="integer", example=1)
+     *             )
+     *         )
+     *     ),
+     * *     @OA\Response(
+     *         response=422,
+     *         description="Erreur de validation",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Les données sont invalides."),
+     *             @OA\Property(property="errors", type="object")
+     *         )
+     *     )
+     * )
+     */
 }
